@@ -1,0 +1,249 @@
+
+  services:
+    postgres:
+      image: postgres:16-alpine
+      container_name: garage-control-postgres
+      restart: unless-stopped
+      networks: [garage-net]
+
+      environment:
+        POSTGRES_DB: ${POSTGRES_DB:-garage_control}
+        POSTGRES_USER: ${POSTGRES_USER:-garage}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+
+      ports:
+        - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
+
+      healthcheck:
+        test:
+          [
+            "CMD-SHELL",
+            "pg_isready -U ${POSTGRES_USER:-garage} -d ${POSTGRES_DB:-garage_control}"
+          ]
+        interval: 5s
+        timeout: 3s
+        retries: 10
+        start_period: 10s
+
+    redis:
+      image: redis:7-alpine
+      container_name: garage-control-redis
+      restart: unless-stopped
+      networks: [garage-net]
+
+      ports:
+        - "127.0.0.1:${REDIS_PORT:-6379}:6379"
+
+      volumes:
+        - redis_data:/data
+
+      healthcheck:
+        test: ["CMD", "redis-cli", "ping"]
+        interval: 5s
+        timeout: 3s
+        retries: 10
+        start_period: 5s
+
+    backend:
+      build:
+        context: .
+        dockerfile: Dockerfile
+
+      container_name: garage-control-backend
+      restart: unless-stopped
+      networks:
+        garage-net:
+          aliases: [backend]
+
+      read_only: true
+
+      tmpfs:
+        - /tmp
+
+      security_opt:
+        - no-new-privileges:true
+
+      cap_drop:
+        - ALL
+
+      environment:
+        # ----------------------------------------------------------------------
+        # Server
+        # ----------------------------------------------------------------------
+        SERVER_PORT: 8080
+        MANAGEMENT_PORT: 8081
+        MANAGEMENT_ADDRESS: 0.0.0.0
+
+        # ----------------------------------------------------------------------
+        # Application
+        # ----------------------------------------------------------------------
+        APP_ENVIRONMENT: ${APP_ENVIRONMENT:-local}
+        APP_VERSION: ${APP_VERSION:-0.0.7-SNAPSHOT}
+        LOG_STRUCTURED_FORMAT: ${LOG_STRUCTURED_FORMAT:-ecs}
+
+        # ----------------------------------------------------------------------
+        # CORS / Security
+        # ----------------------------------------------------------------------
+        CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:5173}
+        SECURITY_TRUST_FORWARDED_HEADERS: ${SECURITY_TRUST_FORWARDED_HEADERS:-false}
+        SECURITY_HSTS_ENABLED: ${SECURITY_HSTS_ENABLED:-false}
+
+        SECURITY_RATE_LIMIT_ENABLED: ${SECURITY_RATE_LIMIT_ENABLED:-true}
+        SECURITY_LOGIN_REQUESTS_PER_MINUTE: ${SECURITY_LOGIN_REQUESTS_PER_MINUTE:-10}
+        SECURITY_HIKVISION_REQUESTS_PER_MINUTE: ${SECURITY_HIKVISION_REQUESTS_PER_MINUTE:-120}
+        SECURITY_RATE_LIMIT_FAIL_OPEN: ${SECURITY_RATE_LIMIT_FAIL_OPEN:-false}
+
+        SERVER_FORWARD_HEADERS_STRATEGY: ${SERVER_FORWARD_HEADERS_STRATEGY:-none}
+        SERVER_MAX_HTTP_REQUEST_HEADER_SIZE: ${SERVER_MAX_HTTP_REQUEST_HEADER_SIZE:-16KB}
+
+        # ----------------------------------------------------------------------
+        # JWT
+        # ----------------------------------------------------------------------
+        JWT_SECRET_BASE64: ${JWT_SECRET_BASE64:?JWT_SECRET_BASE64 must be configured}
+        JWT_ISSUER: ${JWT_ISSUER:-garage-control-backend}
+        JWT_ACCESS_TOKEN_TTL: ${JWT_ACCESS_TOKEN_TTL:-PT30M}
+
+        # ----------------------------------------------------------------------
+        # Initial admin
+        # ----------------------------------------------------------------------
+        APP_INITIAL_ADMIN_ENABLED: ${APP_INITIAL_ADMIN_ENABLED:-false}
+        APP_INITIAL_ADMIN_USERNAME: ${APP_INITIAL_ADMIN_USERNAME:-admin}
+        APP_INITIAL_ADMIN_PASSWORD: ${APP_INITIAL_ADMIN_PASSWORD:-}
+        APP_INITIAL_ADMIN_FULL_NAME: ${APP_INITIAL_ADMIN_FULL_NAME:-Administrador}
+        APP_INITIAL_ADMIN_ROLE: ${APP_INITIAL_ADMIN_ROLE:-SUPER_ADMIN}
+
+        # ----------------------------------------------------------------------
+        # PostgreSQL
+        # ----------------------------------------------------------------------
+        SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-garage_control}
+        SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-garage}
+        SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+
+        # ----------------------------------------------------------------------
+        # Redis
+        # ----------------------------------------------------------------------
+        SPRING_DATA_REDIS_HOST: redis
+        SPRING_DATA_REDIS_PORT: 6379
+
+        # ----------------------------------------------------------------------
+        # Hikvision
+        # ----------------------------------------------------------------------
+        HIKVISION_ENTRY_HOST: ${HIKVISION_ENTRY_HOST:-192.168.15.43}
+        HIKVISION_EXIT_HOST: ${HIKVISION_EXIT_HOST:-192.168.15.44}
+        HIKVISION_PORT: ${HIKVISION_PORT:-80}
+        HIKVISION_USERNAME: ${HIKVISION_USERNAME:-}
+        HIKVISION_PASSWORD: ${HIKVISION_PASSWORD:-}
+        HIKVISION_ENTRY_WEBHOOK_TOKEN: ${HIKVISION_ENTRY_WEBHOOK_TOKEN:-}
+        HIKVISION_EXIT_WEBHOOK_TOKEN: ${HIKVISION_EXIT_WEBHOOK_TOKEN:-}
+        HIKVISION_COOLDOWN: ${HIKVISION_COOLDOWN:-PT30S}
+        HIKVISION_ENFORCE_REMOTE_IP: ${HIKVISION_ENFORCE_REMOTE_IP:-true}
+        HIKVISION_IMAGE_STORAGE_PATH: /app/data/hikvision
+
+        # ----------------------------------------------------------------------
+        # Gate
+        # ----------------------------------------------------------------------
+        GATE_ENABLED: ${GATE_ENABLED:-false}
+        GATE_DRIVER: ${GATE_DRIVER:-SIMULATED}
+        GATE_ENTRY_URL: ${GATE_ENTRY_URL:-}
+        GATE_EXIT_URL: ${GATE_EXIT_URL:-}
+        GATE_USERNAME: ${GATE_USERNAME:-}
+        GATE_PASSWORD: ${GATE_PASSWORD:-}
+        GATE_BEARER_TOKEN: ${GATE_BEARER_TOKEN:-}
+        GATE_TIMEOUT: ${GATE_TIMEOUT:-PT3S}
+        GATE_MAX_ATTEMPTS: ${GATE_MAX_ATTEMPTS:-3}
+        GATE_RETRY_DELAY: ${GATE_RETRY_DELAY:-PT5S}
+        GATE_OPERATION_POLL_DELAY_MS: ${GATE_OPERATION_POLL_DELAY_MS:-2000}
+        GATE_INCLUDE_PLATE: ${GATE_INCLUDE_PLATE:-false}
+        GATE_OPEN_PULSE_MILLIS: ${GATE_OPEN_PULSE_MILLIS:-1000}
+
+      ports:
+        # API disponível na máquina e na rede local
+        - "8080:8080"
+
+        # Actuator restrito à máquina local
+        - "127.0.0.1:8081:8081"
+
+      volumes:
+        - ./data/hikvision:/app/data/hikvision
+
+      depends_on:
+        postgres:
+          condition: service_healthy
+        redis:
+          condition: service_healthy
+
+      healthcheck:
+        test:
+          [
+            "CMD-SHELL",
+            "wget --no-verbose --tries=1 --spider http://127.0.0.1:8081/actuator/health || exit 1"
+          ]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+        start_period: 40s
+
+    prometheus:
+      image: prom/prometheus:v3.13.3
+      container_name: garage-control-prometheus
+      restart: unless-stopped
+      networks: [garage-net]
+
+      profiles:
+        - observability
+
+      ports:
+        - "127.0.0.1:${PROMETHEUS_PORT:-9090}:9090"
+
+      volumes:
+        - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+        - prometheus_data:/prometheus
+
+      command:
+        - "--config.file=/etc/prometheus/prometheus.yml"
+        - "--storage.tsdb.path=/prometheus"
+        - "--storage.tsdb.retention.time=${PROMETHEUS_RETENTION:-15d}"
+
+      depends_on:
+        backend:
+          condition: service_healthy
+
+    grafana:
+      image: grafana/grafana:13.2.1
+      container_name: garage-control-grafana
+      restart: unless-stopped
+      networks: [garage-net]
+
+      profiles:
+        - observability
+
+      environment:
+        GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+        GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-CHANGE_ME_MIN_12_CHARS}
+        GF_USERS_ALLOW_SIGN_UP: "false"
+
+      ports:
+        - "127.0.0.1:${GRAFANA_PORT:-3000}:3000"
+
+      volumes:
+        - grafana_data:/var/lib/grafana
+        - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
+
+      depends_on:
+        prometheus:
+          condition: service_started
+
+  networks:
+    garage-net:
+      name: garage-net
+      external: true
+
+  volumes:
+    postgres_data:
+    redis_data:
+    prometheus_data:
+    grafana_data:
+

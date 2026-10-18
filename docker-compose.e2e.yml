@@ -1,0 +1,76 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-garage_control_e2e}
+      POSTGRES_USER: ${POSTGRES_USER:-garage}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-garage-e2e-password}
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - garage_e2e_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-garage} -d ${POSTGRES_DB:-garage_control_e2e}"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "127.0.0.1:6380:6379"
+    volumes:
+      - garage_e2e_redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  backend:
+    build: ./backend
+    environment:
+      SERVER_PORT: 8080
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-garage_control_e2e}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-garage}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-garage-e2e-password}
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      JWT_SECRET_BASE64: ${JWT_SECRET_BASE64}
+      JWT_ISSUER: ${JWT_ISSUER:-garage-control-backend-e2e}
+      JWT_ACCESS_TOKEN_TTL: ${JWT_ACCESS_TOKEN_TTL:-PT30M}
+      APP_INITIAL_ADMIN_ENABLED: ${APP_INITIAL_ADMIN_ENABLED:-true}
+      APP_INITIAL_ADMIN_USERNAME: ${APP_INITIAL_ADMIN_USERNAME:-admin}
+      APP_INITIAL_ADMIN_PASSWORD: ${APP_INITIAL_ADMIN_PASSWORD}
+      APP_INITIAL_ADMIN_FULL_NAME: ${APP_INITIAL_ADMIN_FULL_NAME:-Administrador E2E}
+      APP_INITIAL_ADMIN_ROLE: ${APP_INITIAL_ADMIN_ROLE:-SUPER_ADMIN}
+      HIKVISION_ENTRY_WEBHOOK_TOKEN: ${HIKVISION_ENTRY_WEBHOOK_TOKEN:-e2e-entry-secret-at-least-32-characters}
+      HIKVISION_EXIT_WEBHOOK_TOKEN: ${HIKVISION_EXIT_WEBHOOK_TOKEN:-e2e-exit-secret-at-least-32-characters}
+      HIKVISION_ENFORCE_REMOTE_IP: ${HIKVISION_ENFORCE_REMOTE_IP:-false}
+      HIKVISION_ENTRY_HOST: 192.168.15.43
+      HIKVISION_EXIT_HOST: 192.168.15.44
+      HIKVISION_PORT: 80
+      HIKVISION_USERNAME: e2e
+      HIKVISION_PASSWORD: e2e
+      HIKVISION_IMAGE_STORAGE_PATH: /app/data/hikvision
+      HIKVISION_COOLDOWN: ${HIKVISION_COOLDOWN:-PT30S}
+      GATE_ENABLED: ${GATE_ENABLED:-false}
+      GATE_DRIVER: ${GATE_DRIVER:-SIMULATED}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://127.0.0.1:5173}
+      SECURITY_RATE_LIMIT_ENABLED: ${SECURITY_RATE_LIMIT_ENABLED:-false}
+      DASHBOARD_ZONE_ID: America/Recife
+    ports:
+      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:8081:8081"
+    volumes:
+      - garage_e2e_hikvision:/app/data/hikvision
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  garage_e2e_postgres:
+  garage_e2e_redis:
+  garage_e2e_hikvision:

@@ -1,0 +1,41 @@
+Command: ['node', '--experimental-strip-types', 'scripts/frontend-smoke.mjs']
+Frontend offline smoke | 2026-10-18T18:22:09.776Z | Node v24.19.0
+Command: node --experimental-strip-types scripts/frontend-smoke.mjs
+Scope: real session storage and HTTP client code, local fixtures; no network or hardware.
+PASS syntax frontend/src/__tests__/api.test.ts
+PASS syntax frontend/src/__tests__/auth-storage.test.ts
+PASS syntax frontend/src/__tests__/gate-status.test.ts
+PASS syntax frontend/src/__tests__/realtime-parser.test.ts
+PASS syntax frontend/src/__tests__/validation.test.ts
+PASS syntax frontend/src/auth/auth-storage.ts
+PASS syntax frontend/src/config/env.ts
+PASS syntax frontend/src/hooks/useOperationalDashboard.ts
+PASS syntax frontend/src/hooks/useUnifiedRegistration.ts
+PASS syntax frontend/src/lib/presentation/__tests__/common.test.ts
+PASS syntax frontend/src/lib/presentation/__tests__/gate.test.ts
+PASS syntax frontend/src/lib/presentation/__tests__/movement.test.ts
+PASS syntax frontend/src/lib/presentation/__tests__/parking-space.test.ts
+PASS syntax frontend/src/lib/presentation/common.ts
+PASS syntax frontend/src/lib/presentation/gate.ts
+PASS syntax frontend/src/lib/presentation/labels.ts
+PASS syntax frontend/src/lib/presentation/messages.ts
+PASS syntax frontend/src/lib/presentation/movement.ts
+PASS syntax frontend/src/lib/presentation/parking-space.ts
+PASS syntax frontend/src/lib/theme.ts
+PASS syntax frontend/src/lib/validation.ts
+PASS syntax frontend/src/realtime/realtime-client.ts
+PASS syntax frontend/src/services/api.ts
+PASS syntax frontend/src/test-setup.ts
+PASS syntax frontend/src/types/api.ts
+PASS plain .ts syntax: 25 files; TSX/declarations excluded; no type checking.
+PASS auth-storage: valid session, invalid expiry, expired session, corrupt JSON, clear.
+PASS API registration: single POST, exact atomic payload, bearer and cancellation signal.
+PASS API conflict: structured 409 is preserved.
+PASS API failure: supplied signal preserved; uncertain response has no automatic retry.
+PASS API revoke: original token supplied; 401 does not trigger an unauthorized event loop.
+PASS API unauthorized: 401 clears the session and emits one unauthorized event.
+PASS frontend offline smoke. Full Vitest/RTL, TSX, typecheck, build and coverage remain separate checks.
+(node:5115) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+Exit code: 0

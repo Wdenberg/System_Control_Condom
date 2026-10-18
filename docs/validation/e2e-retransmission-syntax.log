@@ -1,0 +1,3 @@
+Command: ['node', '--experimental-strip-types', '--check', 'e2e/tests/04-webhook-security-and-idempotency.spec.ts']
+
+Exit code: 0

@@ -1,0 +1,12 @@
+package com.estacionamento.api;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class GarageControlApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(GarageControlApplication.class, args);
+    }
+}

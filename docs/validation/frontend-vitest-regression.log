@@ -1,0 +1,13 @@
+npm notice run garage-control-frontend@1.0.0 test
+npm notice run vitest run src/__tests__/api.test.ts src/__tests__/passage-reconciliation.test.tsx src/__tests__/unified-registration-page.test.tsx src/lib/presentation/__tests__/gate.test.ts src/components/__tests__/modal.test.tsx
+
+ RUN  v5.0.0 /Volumes/Disco Mac/Projetos Java/Controle de Garagem/Controle de Garagem/frontend
+
+
+ Test Files  5 passed (5)
+      Tests  51 passed (51)
+   Start at  15:46:59
+   Duration  13.77s (environment 55%, tests 15%, setup 12%, import 9%, transform 7%, worker 1%)
+
+
+Exit code: 0

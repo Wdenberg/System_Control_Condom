@@ -1,0 +1,22 @@
+JUnit Launcher with actual Gradle dependency classpath and Java21.
+Selected classes: 21
+16:30:37.245 [main] INFO com.estacionamento.api.infrastructure.gate.SimulatedGateDriver -- SIMULATED GATE OPEN operation=op-1 direction=ENTRY plate=ABC1D23 pulseMs=1000
+
+Test run finished after 7518 ms
+[        23 containers found      ]
+[         0 containers skipped    ]
+[        23 containers started    ]
+[         0 containers aborted    ]
+[        23 containers successful ]
+[         0 containers failed     ]
+[        68 tests found           ]
+[         0 tests skipped         ]
+[        68 tests started         ]
+[         0 tests aborted         ]
+[        68 tests successful      ]
+[         0 tests failed          ]
+
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[Fatal Error] :1:31: DOCTYPE is disallowed when the feature "http://apache.org/xml/features/disallow-doctype-decl" set to true.
+
+Exit code: 0

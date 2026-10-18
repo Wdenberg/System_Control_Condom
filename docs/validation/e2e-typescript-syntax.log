@@ -1,0 +1,3 @@
+Command: ['node', '--experimental-strip-types', '--check', 'e2e/utils/hikvision.ts']
+
+Exit code: 0

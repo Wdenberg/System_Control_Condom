@@ -1,0 +1,12 @@
+.gradle/
+build/
+out/
+!gradle/wrapper/gradle-wrapper.jar
+.idea/
+*.iml
+.vscode/
+.env
+*.log
+.DS_Store
+
+/data/hikvision/

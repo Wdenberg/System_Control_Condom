@@ -1,0 +1,19 @@
+{
+  "uid": "garage-control-observability",
+  "title": "Garage Control - Observabilidade",
+  "schemaVersion": 41,
+  "version": 1,
+  "refresh": "15s",
+  "time": {"from": "now-1h", "to": "now"},
+  "templating": {"list": []},
+  "panels": [
+    {"id":1,"type":"stat","title":"Hikvision recebidos","gridPos":{"h":4,"w":6,"x":0,"y":0},"targets":[{"expr":"garage_hikvision_events_received_total","refId":"A"}]},
+    {"id":2,"type":"stat","title":"Movimentos autorizados","gridPos":{"h":4,"w":6,"x":6,"y":0},"targets":[{"expr":"sum(garage_movements_authorized_total)","refId":"A"}]},
+    {"id":3,"type":"stat","title":"Movimentos negados","gridPos":{"h":4,"w":6,"x":12,"y":0},"targets":[{"expr":"sum(garage_movements_denied_total)","refId":"A"}]},
+    {"id":4,"type":"stat","title":"Clientes SSE conectados","gridPos":{"h":4,"w":6,"x":18,"y":0},"targets":[{"expr":"garage_realtime_connected_clients","refId":"A"}]},
+    {"id":5,"type":"timeseries","title":"Eventos Hikvision / 5 min","gridPos":{"h":8,"w":12,"x":0,"y":4},"targets":[{"expr":"rate(garage_hikvision_events_received_total[5m])","legendFormat":"recebidos","refId":"A"},{"expr":"rate(garage_hikvision_events_duplicate_total[5m])","legendFormat":"duplicados","refId":"B"},{"expr":"rate(garage_hikvision_events_failed_total[5m])","legendFormat":"falhas","refId":"C"}]},
+    {"id":6,"type":"timeseries","title":"Latência ANPR","gridPos":{"h":8,"w":12,"x":12,"y":4},"targets":[{"expr":"histogram_quantile(0.95, sum(rate(garage_hikvision_processing_seconds_bucket[5m])) by (le))","legendFormat":"p95","refId":"A"},{"expr":"histogram_quantile(0.50, sum(rate(garage_hikvision_processing_seconds_bucket[5m])) by (le))","legendFormat":"p50","refId":"B"}]},
+    {"id":7,"type":"timeseries","title":"HTTP requests / segundo","gridPos":{"h":8,"w":12,"x":0,"y":12},"targets":[{"expr":"sum(rate(http_server_requests_seconds_count[5m])) by (uri)","legendFormat":"{{uri}}","refId":"A"}]},
+    {"id":8,"type":"timeseries","title":"Falhas da cancela","gridPos":{"h":8,"w":12,"x":12,"y":12},"targets":[{"expr":"rate(garage_gate_operations_failed_total[5m])","legendFormat":"falhas","refId":"A"},{"expr":"rate(garage_gate_operations_exhausted_total[5m])","legendFormat":"esgotadas","refId":"B"}]}
+  ]
+}

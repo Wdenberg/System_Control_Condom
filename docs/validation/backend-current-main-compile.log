@@ -1,0 +1,6 @@
+Compiler: javac --release 21 -parameters; dependencies from actual Gradle test worker classpath plus API Guardian annotation metadata from the same Gradle cache.
+Source files: 166; cached jars: 185
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+Exit code: 0

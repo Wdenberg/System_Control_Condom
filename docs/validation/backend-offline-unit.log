@@ -1,0 +1,6 @@
+15:28:41.103 [main] INFO com.estacionamento.api.infrastructure.gate.SimulatedGateDriver -- SIMULATED GATE OPEN operation=op-1 direction=ENTRY plate=ABC1D23 pulseMs=1000
+Cached JUnit unit subset: passed=54 failed=0 aborted=0
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[Fatal Error] :1:31: DOCTYPE is disallowed when the feature "http://apache.org/xml/features/disallow-doctype-decl" set to true.
+
+Exit code: 0

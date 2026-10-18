@@ -1,0 +1,19 @@
+{
+  "source": "backend/build/test-results/test/TEST-com.estacionamento.api.RemediationIntegrationTest.xml",
+  "timestamp": "2026-10-18T19:23:47.714Z",
+  "tests": 24,
+  "failures": 2,
+  "errors": 0,
+  "skipped": 0,
+  "failedCases": [
+    {
+      "name": "unknownOutcomeRequiresControllerVerificationBeforeReconciliation()",
+      "message": "java.lang.AssertionError: Status expected:<200> but was:<404>"
+    },
+    {
+      "name": "reconciledPassageCannotBeRetriedAdministratively()",
+      "message": "java.lang.AssertionError: Status expected:<200> but was:<409>"
+    }
+  ],
+  "scope": "Execution supplied by user before correction; no request bodies, credentials or tokens copied."
+}

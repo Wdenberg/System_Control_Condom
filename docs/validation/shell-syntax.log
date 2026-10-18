@@ -1,0 +1,3 @@
+Command: ['bash', '-n', 'deploy/scripts/validate-release.sh', 'deploy/scripts/backup-postgres.sh', 'deploy/scripts/restore-postgres.sh', 'deploy/scripts/healthcheck.sh', 'e2e/scripts/run-e2e.sh']
+
+Exit code: 0

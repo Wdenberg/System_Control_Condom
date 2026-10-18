@@ -1,0 +1,51 @@
+package com.estacionamento.api.application.hikvision;
+
+import java.time.OffsetDateTime;
+import java.util.List;
+
+public record ParsedHikvisionAnprEvent(
+        String sourceIpAddress,
+        String ipv6Address,
+        Integer portNo,
+        String protocol,
+        String macAddress,
+        Integer channelId,
+        OffsetDateTime occurredAt,
+        Integer activePostCount,
+        String eventType,
+        String eventState,
+        String eventDescription,
+        String channelName,
+        String countryCode,
+        String plate,
+        Integer lineNumber,
+        String captureDirection,
+        Integer confidenceLevel,
+        String plateType,
+        String plateColor,
+        Integer licenseBright,
+        String dangmark,
+        String twoWheelVehicle,
+        String threeWheelVehicle,
+        String plateCharBelieve,
+        String vehicleType,
+        Integer detectDir,
+        Integer detectType,
+        Integer alarmDataType,
+        Integer vehicleIndex,
+        Integer vehicleColorDepth,
+        String vehicleColor,
+        Integer vehicleLength,
+        Integer vehicleLogoRecog,
+        Integer vehicleSubLogoRecog,
+        Integer vehicleModel,
+        String vehicleListName,
+        Integer plateSize,
+        List<HikvisionPicturePayload> pictures,
+        String originalLicensePlate,
+        String crIndex,
+        String uuid,
+        Integer pictureCount,
+        boolean dataRetransmission
+) {
+}

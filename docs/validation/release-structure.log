@@ -1,0 +1,6 @@
+Command: ['bash', 'deploy/scripts/validate-release.sh']
+WARN: Git metadata unavailable; secret tracking cannot be verified in this snapshot.
+RBAC documentation matches executable policy
+Release structure validated. This does not approve production or physical automation.
+
+Exit code: 0

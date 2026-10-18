@@ -1,0 +1,251 @@
+services:
+  postgres:
+    networks: [data]
+    image: postgres:16-alpine
+    container_name: garage-control-postgres-prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  redis:
+    networks: [data]
+    image: redis:7-alpine
+    container_name: garage-control-redis-prod
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  backend:
+    networks:
+      app:
+        ipv4_address: 172.31.0.3
+      data: {}
+      management: {}
+    build:
+      context: ./backend
+    container_name: garage-control-backend-prod
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    environment:
+      SERVER_PORT: 8080
+      MANAGEMENT_PORT: 8081
+      MANAGEMENT_ADDRESS: 0.0.0.0
+      APP_ENVIRONMENT: ${APP_ENVIRONMENT}
+      APP_VERSION: ${APP_VERSION}
+      LOG_STRUCTURED_FORMAT: ${LOG_STRUCTURED_FORMAT}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
+      SECURITY_TRUSTED_PROXIES: 172.31.0.2
+      SECURITY_TRUST_FORWARDED_HEADERS: ${SECURITY_TRUST_FORWARDED_HEADERS}
+      SECURITY_HSTS_ENABLED: ${SECURITY_HSTS_ENABLED}
+      SECURITY_RATE_LIMIT_ENABLED: ${SECURITY_RATE_LIMIT_ENABLED}
+      SECURITY_LOGIN_REQUESTS_PER_MINUTE: ${SECURITY_LOGIN_REQUESTS_PER_MINUTE}
+      SECURITY_HIKVISION_REQUESTS_PER_MINUTE: ${SECURITY_HIKVISION_REQUESTS_PER_MINUTE}
+      SECURITY_RATE_LIMIT_FAIL_OPEN: ${SECURITY_RATE_LIMIT_FAIL_OPEN}
+      SERVER_FORWARD_HEADERS_STRATEGY: none
+      SERVER_MAX_HTTP_REQUEST_HEADER_SIZE: ${SERVER_MAX_HTTP_REQUEST_HEADER_SIZE}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      JWT_SECRET_BASE64: ${JWT_SECRET_BASE64}
+      JWT_ISSUER: ${JWT_ISSUER}
+      JWT_ACCESS_TOKEN_TTL: ${JWT_ACCESS_TOKEN_TTL}
+      APP_INITIAL_ADMIN_ENABLED: ${APP_INITIAL_ADMIN_ENABLED}
+      APP_INITIAL_ADMIN_USERNAME: ${APP_INITIAL_ADMIN_USERNAME}
+      APP_INITIAL_ADMIN_PASSWORD: ${APP_INITIAL_ADMIN_PASSWORD}
+      APP_INITIAL_ADMIN_FULL_NAME: ${APP_INITIAL_ADMIN_FULL_NAME}
+      APP_INITIAL_ADMIN_ROLE: ${APP_INITIAL_ADMIN_ROLE}
+      HIKVISION_ENTRY_HOST: ${HIKVISION_ENTRY_HOST}
+      HIKVISION_EXIT_HOST: ${HIKVISION_EXIT_HOST}
+      HIKVISION_PORT: ${HIKVISION_PORT}
+      HIKVISION_USERNAME: ${HIKVISION_USERNAME}
+      HIKVISION_PASSWORD: ${HIKVISION_PASSWORD}
+      HIKVISION_ENTRY_WEBHOOK_TOKEN: ${HIKVISION_ENTRY_WEBHOOK_TOKEN:?Configure a distinct entry webhook token}
+      HIKVISION_EXIT_WEBHOOK_TOKEN: ${HIKVISION_EXIT_WEBHOOK_TOKEN:?Configure a distinct exit webhook token}
+      HIKVISION_COOLDOWN: ${HIKVISION_COOLDOWN}
+      HIKVISION_ENFORCE_REMOTE_IP: ${HIKVISION_ENFORCE_REMOTE_IP}
+      HIKVISION_IMAGE_STORAGE_PATH: /app/data/hikvision
+      PARKING_ACCESS_MIN_CONFIDENCE: ${PARKING_ACCESS_MIN_CONFIDENCE}
+      GATE_ENABLED: ${GATE_ENABLED}
+      GATE_HARDWARE_APPROVED: ${GATE_HARDWARE_APPROVED:-false}
+      GATE_DRIVER: ${GATE_DRIVER}
+      GATE_ENTRY_URL: ${GATE_ENTRY_URL}
+      GATE_EXIT_URL: ${GATE_EXIT_URL}
+      GATE_USERNAME: ${GATE_USERNAME}
+      GATE_PASSWORD: ${GATE_PASSWORD}
+      GATE_BEARER_TOKEN: ${GATE_BEARER_TOKEN}
+      GATE_TIMEOUT: ${GATE_TIMEOUT}
+      GATE_MAX_ATTEMPTS: ${GATE_MAX_ATTEMPTS}
+      GATE_RETRY_DELAY: ${GATE_RETRY_DELAY}
+      GATE_OPERATION_POLL_DELAY_MS: ${GATE_OPERATION_POLL_DELAY_MS}
+      GATE_INCLUDE_PLATE: ${GATE_INCLUDE_PLATE}
+      GATE_OPEN_PULSE_MILLIS: ${GATE_OPEN_PULSE_MILLIS}
+      DASHBOARD_ZONE_ID: ${DASHBOARD_ZONE_ID}
+      DASHBOARD_CACHE_TTL: ${DASHBOARD_CACHE_TTL}
+      MANAGEMENT_EXPOSED_ENDPOINTS: health,prometheus,metrics
+    volumes:
+      - hikvision_data:/app/data/hikvision
+    expose:
+      - "8080"
+      - "8081"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8081/actuator/health/readiness | grep -q 'UP'"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    networks:
+      edge:
+        ipv4_address: 172.30.0.3
+      app:
+        ipv4_address: 172.31.0.2
+    build:
+      context: ./frontend
+      args:
+        VITE_PROMETHEUS_URL: ${VITE_PROMETHEUS_URL:-}
+        VITE_GRAFANA_URL: ${VITE_GRAFANA_URL:-}
+    container_name: garage-control-frontend-prod
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx:uid=101,gid=101,mode=0755
+      - /var/run:uid=101,gid=101,mode=0755
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/ | grep -q '<!doctype html' || wget -qO- http://127.0.0.1:8080/ | grep -qi '<html'"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  edge:
+    networks:
+      edge:
+        ipv4_address: 172.30.0.2
+    image: nginx:1.29-alpine
+    user: "101:101"
+    container_name: garage-control-edge-prod
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx:uid=101,gid=101,mode=0755
+      - /var/run:uid=101,gid=101,mode=0755
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    ports:
+      - "${HTTP_PORT:-80}:8080"
+      - "${HTTPS_PORT:-443}:8443"
+    volumes:
+      - ./frontend/nginx-main.conf:/etc/nginx/nginx.conf:ro
+      - ./deploy/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./deploy/certs:/etc/nginx/certs:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- --no-check-certificate https://127.0.0.1:8443/ | grep -qi '<html'"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    depends_on:
+      frontend:
+        condition: service_healthy
+
+  prometheus:
+    networks: [management]
+    image: prom/prometheus:v3.13.3
+    container_name: garage-control-prometheus-prod
+    restart: unless-stopped
+    profiles: ["observability"]
+    expose:
+      - "9090"
+    volumes:
+      - ./backend/docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=${PROMETHEUS_RETENTION:-15d}"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  grafana:
+    networks: [management]
+    image: grafana/grafana:13.2.1
+    container_name: garage-control-grafana-prod
+    restart: unless-stopped
+    profiles: ["observability"]
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    expose:
+      - "3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./backend/docker/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./backend/docker/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      prometheus:
+        condition: service_started
+
+volumes:
+  postgres_data:
+  redis_data:
+  hikvision_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  edge:
+    ipam:
+      config: [{ subnet: 172.30.0.0/24 }]
+  app:
+    ipam:
+      config: [{ subnet: 172.31.0.0/24 }]
+  data:
+    internal: true
+  management:
+    internal: true

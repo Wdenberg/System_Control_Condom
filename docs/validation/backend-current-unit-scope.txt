@@ -1,0 +1,46 @@
+JUnit Launcher, actual Gradle dependency classpath, no Docker or network.
+
+Selected:
+com.estacionamento.api.application.audit.AuditServiceTest
+com.estacionamento.api.application.dashboard.DashboardServiceTest
+com.estacionamento.api.application.gate.GateDispatchWorkerTest
+com.estacionamento.api.application.gate.GateOperationServiceTest
+com.estacionamento.api.application.parking.ParkingSpaceSafetyTest
+com.estacionamento.api.application.realtime.RealtimeEventPublisherTest
+com.estacionamento.api.application.report.ReportServiceTest
+com.estacionamento.api.domain.movement.PassageLifecycleTest
+com.estacionamento.api.domain.role.RolePermissionsTest
+com.estacionamento.api.domain.user.SessionVersionTest
+com.estacionamento.api.infrastructure.gate.GateDriverStatusTest
+com.estacionamento.api.infrastructure.gate.HttpGateDriverUnitTest
+com.estacionamento.api.infrastructure.gate.SimulatedGateDriverTest
+com.estacionamento.api.infrastructure.hikvision.HikvisionXmlParserTest
+com.estacionamento.api.infrastructure.hikvision.PlateNormalizerTest
+com.estacionamento.api.security.ConstantTimeSecretMatcherTest
+com.estacionamento.api.security.HikvisionWebhookSecurityServiceTest
+com.estacionamento.api.security.PersistentSessionValidatorTest
+com.estacionamento.api.web.filter.ClientIpResolverTest
+com.estacionamento.api.web.filter.SensitiveOperationAuditFilterTest
+com.estacionamento.api.web.filter.WebhookPayloadLimitFilterTest
+
+Not run here (remain in official suite):
+backend/src/test/java/com/estacionamento/api/GarageControlApplicationTests.java — requires real containers / application context
+backend/src/test/java/com/estacionamento/api/RemediationIntegrationTest.java — requires real containers / application context
+backend/src/test/java/com/estacionamento/api/application/ApartmentServiceIntegrationTest.java — requires real containers / application context
+backend/src/test/java/com/estacionamento/api/application/MovementServiceIntegrationTest.java — requires real containers / application context
+backend/src/test/java/com/estacionamento/api/application/ParkingSpaceServiceIntegrationTest.java — requires real containers / application context
+backend/src/test/java/com/estacionamento/api/application/VehicleServiceIntegrationTest.java — requires real containers / application context
+backend/src/test/java/com/estacionamento/api/application/auth/AuthServiceIntegrationTest.java — requires real containers / application context
+backend/src/test/java/com/estacionamento/api/application/hikvision/HikvisionEventIdempotencyLockConcurrencyTest.java — requires real containers / application context
+backend/src/test/java/com/estacionamento/api/application/hikvision/HikvisionEventServiceIntegrationTest.java — requires real containers / application context
+backend/src/test/java/com/estacionamento/api/application/hikvision/HikvisionToMovementIntegrationTest.java — requires real containers / application context
+backend/src/test/java/com/estacionamento/api/infrastructure/gate/HttpGateDriverTest.java — requires local socket unavailable in agent sandbox
+backend/src/test/java/com/estacionamento/api/security/SecurityHeadersIntegrationTest.java — requires real containers / application context
+backend/src/test/java/com/estacionamento/api/security/SecurityIntegrationTest.java — requires real containers / application context
+backend/src/test/java/com/estacionamento/api/web/DomainCrudAuthorizationIntegrationTest.java — requires real containers / application context
+backend/src/test/java/com/estacionamento/api/web/MovementControllerSecurityIntegrationTest.java — requires real containers / application context
+backend/src/test/java/com/estacionamento/api/web/dashboard/DashboardControllerSecurityIntegrationTest.java — requires real containers / application context
+backend/src/test/java/com/estacionamento/api/web/hikvision/HikvisionWebhookControllerIntegrationTest.java — requires real containers / application context
+backend/src/test/java/com/estacionamento/api/web/realtime/RealtimeControllerSecurityIntegrationTest.java — requires real containers / application context
+backend/src/test/java/com/estacionamento/api/web/report/ReportControllerSecurityIntegrationTest.java — requires real containers / application context
+backend/src/test/java/com/estacionamento/api/web/user/UserManagementIntegrationTest.java — requires real containers / application context

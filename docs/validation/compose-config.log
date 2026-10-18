@@ -1,0 +1,3 @@
+Command: ['docker', 'compose', '--env-file', '.env.prod.example', '-f', 'docker-compose.prod.yml', 'config', '--quiet']
+
+Exit code: 0

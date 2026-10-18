@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: garage_restore
+      POSTGRES_USER: garage_restore
+      POSTGRES_PASSWORD: ${RESTORE_DB_PASSWORD:?Restore password is required}
+    volumes: [restore_postgres:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U garage_restore -d garage_restore']
+      interval: 2s
+      timeout: 3s
+      retries: 30
+  files:
+    image: alpine:3.22
+    command: [sleep, infinity]
+    volumes: [restore_images:/restore-images]
+volumes:
+  restore_postgres:
+  restore_images:

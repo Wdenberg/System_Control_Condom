@@ -1,0 +1,4 @@
+npm notice run garage-control-frontend@1.0.0 lint
+npm notice run tsc -b --pretty false
+
+Exit code: 0
