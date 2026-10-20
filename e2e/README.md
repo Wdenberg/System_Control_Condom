@@ -31,17 +31,22 @@ Da raiz:
 ./e2e/scripts/run-e2e.sh
 ```
 
-O script cria um banco e Redis descartáveis, constrói o backend, espera o health check, instala Chromium e executa a suíte contra o frontend Vite real.
+O script usa um projeto Compose exclusivo por execução, cria um banco e Redis descartáveis, constrói o backend, espera o health check, instala as dependências pelo lockfile e o Chromium e executa a suíte contra o frontend Vite real.
 
 Ao terminar, os containers e volumes E2E são removidos.
+
+Em falha, o script salva os logs Compose em `test-results/compose.log` antes de remover o ambiente. Playwright gera também `test-results/results.xml`, além de traces e relatório HTML.
+
+Execução validada em 20/10/2026: seis cenários aprovados no Chromium; evidência em [../docs/validation/e2e-2026-10-20.json](../docs/validation/e2e-2026-10-20.json).
 
 ## Execução manual
 
 ```bash
 docker compose -f docker-compose.e2e.yml up -d --build
-curl http://127.0.0.1:8080/actuator/health
+curl http://127.0.0.1:8081/actuator/health/readiness
 cd e2e
-npm install
+npm ci
+npm run typecheck
 npx playwright install chromium
 npm test
 ```

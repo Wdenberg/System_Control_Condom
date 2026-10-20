@@ -1,0 +1,74 @@
+npm notice run garage-control-frontend@1.0.0 test:coverage
+npm notice run vitest run --coverage
+
+ RUN  v5.0.0 /Volumes/Disco Mac/Projetos Java/Controle de Garagem/Controle de Garagem/frontend
+      Coverage enabled with v8
+
+
+ Test Files  42 passed (42)
+      Tests  276 passed (276)
+   Start at  12:58:02
+   Duration  22.56s (environment 51%, tests 18%, import 15%, setup 9%, transform 4%, worker 3%)
+
+Environment  jsdom was created 42 times · 68.06s total, 51% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+
+ % Coverage report from v8
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   53.17 |    51.65 |   43.39 |   59.21 |                   
+ src/app           |       0 |        0 |       0 |       0 |                   
+  App.tsx          |       0 |        0 |       0 |       0 | 6-56              
+ src/auth          |   96.73 |    85.36 |   90.47 |     100 |                   
+  ...ctedRoute.tsx |     100 |       90 |     100 |     100 | 24                
+  auth-context.tsx |   95.65 |    77.27 |   88.23 |     100 | 19,35-41,63       
+ src/components    |   79.54 |       75 |   93.33 |   87.14 |                   
+  ...rBoundary.tsx |      80 |       75 |      80 |   88.88 | 44                
+  Modal.tsx        |   59.37 |     42.1 |     100 |   70.83 | 31-40             
+  ...ciliation.tsx |   90.62 |    88.88 |    87.5 |   95.65 | 27                
+ src/components/ui |     100 |    96.15 |     100 |     100 |                   
+  ...sionBadge.tsx |     100 |     87.5 |     100 |     100 | 6                 
+ src/config        |     100 |       50 |     100 |     100 |                   
+  env.ts           |     100 |       50 |     100 |     100 | 2-4               
+ src/hooks         |   86.53 |    71.42 |   72.41 |   91.26 |                   
+  ...lDashboard.ts |   83.33 |    59.09 |    62.5 |      90 | 28,38-39          
+  ...gistration.ts |   87.96 |    79.41 |   76.19 |   91.66 | ...30,136-138,147 
+ src/layout        |   76.92 |       50 |   57.14 |   88.88 |                   
+  AppLayout.tsx    |   76.92 |       50 |   57.14 |   88.88 | 94                
+ src/lib           |    74.1 |    83.67 |   58.62 |      71 |                   
+  theme.ts         |       0 |        0 |       0 |       0 | 5-58              
+  validation.ts    |   99.03 |    96.47 |     100 |     100 | 53,78,130         
+ ...b/presentation |    90.9 |    82.92 |      90 |   95.23 |                   
+  common.ts        |   86.66 |    66.66 |     100 |     100 | 4,9,62            
+  messages.ts      |   33.33 |        0 |       0 |   33.33 | 37-41             
+ src/pages         |   43.58 |    43.46 |   35.18 |   52.56 |                   
+  ...mentsPage.tsx |   24.11 |    14.66 |   14.28 |   28.43 | 52-140,169-239    
+  AuditPage.tsx    |      52 |    67.34 |   38.09 |   52.17 | ...,83-93,121-123 
+  CamerasPage.tsx  |     100 |    68.75 |     100 |     100 | 15-16             
+  ...boardPage.tsx |   45.45 |     32.5 |   16.66 |   44.44 | 24-84             
+  LoginPage.tsx    |   95.23 |       75 |     100 |     100 | 17,28             
+  ...mentsPage.tsx |   66.66 |     62.5 |   46.15 |   81.25 | 62-71             
+  ...ilityPage.tsx |   82.35 |       70 |   66.66 |   86.66 | 21,37             
+  ...ngMapPage.tsx |   98.41 |     90.9 |   95.65 |   98.07 | 113               
+  ParkingPage.tsx  |   33.67 |    23.63 |   23.33 |   46.26 | 58-92,106,137-184 
+  PortariaPage.tsx |   22.44 |    35.71 |   11.11 |   28.76 | ...82-107,155-211 
+  ReportsPage.tsx  |    59.8 |    67.07 |   33.33 |   63.85 | ...29-134,160-241 
+  RolesPage.tsx    |   88.88 |    71.42 |   83.33 |   91.66 | 22                
+  ...ationPage.tsx |   77.77 |     93.1 |   78.94 |   81.81 | 66,101,134-146    
+  UsersPage.tsx    |   24.68 |    16.81 |   17.02 |   37.11 | ...35,141,180-282 
+  VehiclesPage.tsx |   33.58 |    17.52 |   17.02 |   47.56 | ...04,113,138-198 
+ src/realtime      |   32.52 |    28.07 |   23.07 |   33.98 |                   
+  ...ime-client.ts |   52.63 |     42.1 |      60 |   54.68 | ...8,55-56,83-121 
+  ...e-context.tsx |       0 |        0 |       0 |       0 | 12-74             
+ src/services      |   27.27 |    37.11 |   15.09 |   28.18 |                   
+  api.ts           |   27.27 |    37.11 |   15.09 |   28.18 | ...17-178,183-287 
+-------------------|---------|----------|---------|---------|-------------------
+
+=============================== Coverage summary ===============================
+Statements   : 53.17% ( 962/1809 )
+Branches     : 51.65% ( 671/1299 )
+Functions    : 43.39% ( 243/560 )
+Lines        : 59.21% ( 816/1378 )
+================================================================================

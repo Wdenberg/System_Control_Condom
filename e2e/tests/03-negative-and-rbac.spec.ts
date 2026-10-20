@@ -23,7 +23,8 @@ test('placa desconhecida gera acesso negado', async ({ page, request }) => {
   await page.getByLabel('Usuário').fill(username);
   await page.getByLabel('Senha').fill(password);
   await page.getByRole('button', { name: 'Entrar' }).click();
-  await page.goto('/portaria');
+  await expect(page).toHaveURL(/\/dashboard$/);
+  await page.getByRole('link', { name: 'Portaria', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Portaria' })).toBeVisible();
   await expect(page.getByText(plate, { exact: true }).first()).toBeVisible({ timeout: 15_000 });
 });

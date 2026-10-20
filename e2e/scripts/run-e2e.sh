@@ -4,6 +4,8 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$ROOT_DIR"
 
+export COMPOSE_PROJECT_NAME="garage-control-e2e-$$"
+
 export POSTGRES_DB="garage_control_e2e"
 export POSTGRES_USER="garage"
 export POSTGRES_PASSWORD="garage-e2e-password"
@@ -29,6 +31,11 @@ export E2E_HIKVISION_WEBHOOK_TOKEN="$HIKVISION_ENTRY_WEBHOOK_TOKEN"
 
 COMPOSE_FILE="docker-compose.e2e.yml"
 cleanup() {
+  local result=$?
+  if (( result != 0 )); then
+    mkdir -p "$ROOT_DIR/e2e/test-results"
+    docker compose -f "$COMPOSE_FILE" logs --no-color > "$ROOT_DIR/e2e/test-results/compose.log" 2>&1 || true
+  fi
   docker compose -f "$COMPOSE_FILE" down -v --remove-orphans || true
 }
 trap cleanup EXIT
@@ -47,7 +54,8 @@ curl -fsS "${E2E_MANAGEMENT_URL:-http://127.0.0.1:8081}/actuator/health/readines
 
 echo "==> Installing E2E dependencies"
 cd e2e
-npm install
+npm ci
+npm run typecheck
 npx playwright install chromium
 
 echo "==> Running Playwright E2E"

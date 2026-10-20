@@ -18,4 +18,4 @@ RESTORE_CONFIRM=ISOLATED bash deploy/scripts/restore-postgres.sh /caminho/backup
 
 O script verifica estrutura, caminhos e hashes antes de extrair; cria PostgreSQL e volume de imagens separados, sem portas públicas ou container_name de produção. Executa pg_restore com falha imediata, confere referências/hashes das imagens restauradas e apresenta contagens. Não escreve sobre produção nem apaga os volumes restaurados. Registrar projeto, manifesto, contagens, duração e resultado no relatório operacional. Credenciais temporárias não são impressas. Backups legados SQL não são apagados; sua recuperação requer procedimento isolado específico.
 
-NÃO VALIDADO operacionalmente: Docker não estava acessível no ambiente desta execução. Não há evidência de pg_dump/pg_restore ou recuperação real. Não considerar backup operacional até o ensaio com dados representativos ser aprovado.
+NÃO VALIDADO operacionalmente: Docker foi disponibilizado para testes em 20/10/2026, mas este procedimento ainda não foi executado. Não há evidência de pg_dump/pg_restore ou recuperação real. Não considerar backup operacional até o ensaio com dados representativos ser aprovado.

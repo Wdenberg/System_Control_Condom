@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "typecheck": "tsc --noEmit",
     "test": "playwright test",
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
@@ -12,7 +13,7 @@
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
-    "@types/node": "24.4.0",
-    "typescript": "6.0.0"
+    "@types/node": "24.19.2",
+    "typescript": "7.0.2"
   }
 }

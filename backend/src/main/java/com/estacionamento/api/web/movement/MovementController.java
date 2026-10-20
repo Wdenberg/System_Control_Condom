@@ -32,13 +32,13 @@ public class MovementController {
     @GetMapping
     @PreAuthorize("hasAuthority('MOVEMENT_READ')")
     public Page<MovementResult> list(@PageableDefault(size = 30) Pageable pageable) {
-        return movementService.list(pageable).map(MovementResult::from);
+        return movementService.list(pageable);
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('MOVEMENT_READ')")
     public MovementResult get(@PathVariable Long id) {
-        return MovementResult.from(movementService.get(id));
+        return movementService.get(id);
     }
 
     @PostMapping("/manual")
@@ -57,11 +57,11 @@ public class MovementController {
         return ResponseEntity.ok(movementService.override(
                 id, request.justification(), currentUserService.require(authentication).getId()));
     }
-    public record PassageConfirmationRequest(boolean passed, boolean controllerSettled, @jakarta.validation.constraints.NotBlank @jakarta.validation.constraints.Size(min = 10, max = 1000) String justification) {}
+    public record PassageConfirmationRequest(boolean passed, Boolean controllerSettled, @jakarta.validation.constraints.NotBlank @jakarta.validation.constraints.Size(min = 10, max = 1000) String justification) {}
     @PostMapping("/{id}/passage-confirmation")
     @PreAuthorize("hasAuthority('MOVEMENT_OVERRIDE')")
     public com.estacionamento.api.application.movement.MovementResult confirmPassage(@PathVariable Long id,
             @Valid @RequestBody PassageConfirmationRequest request, Authentication authentication) {
-        return movementService.confirmPassage(id, request.passed(), request.justification(), currentUserService.require(authentication).getId(), request.controllerSettled());
+        return movementService.confirmPassage(id, request.passed(), request.justification(), currentUserService.require(authentication).getId(), Boolean.TRUE.equals(request.controllerSettled()));
     }
 }

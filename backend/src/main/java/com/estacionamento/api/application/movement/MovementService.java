@@ -170,13 +170,13 @@ public class MovementService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Movement> list(Pageable pageable) {
-        return movementRepository.findAllByOrderByEventTimeDesc(pageable);
+    public Page<MovementResult> list(Pageable pageable) {
+        return movementRepository.findAllByOrderByEventTimeDesc(pageable).map(MovementResult::from);
     }
 
     @Transactional(readOnly = true)
-    public Movement get(Long id) {
-        return movementRepository.findById(id)
+    public MovementResult get(Long id) {
+        return movementRepository.findById(id).map(MovementResult::from)
                 .orElseThrow(() -> new IllegalArgumentException("Movement not found: " + id));
     }
 

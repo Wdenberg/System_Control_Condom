@@ -1,0 +1,348 @@
+{
+  "date": "2026-10-20",
+  "command": "./gradlew clean test build --no-daemon --no-build-cache",
+  "result": "BUILD SUCCESSFUL",
+  "duration": "11m 2s",
+  "totals": {
+    "tests": 146,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "suiteCount": 41,
+  "artifact": {
+    "path": "backend/build/libs/garage-control-backend-1.0.0.jar",
+    "sizeBytes": 74820145,
+    "sha256": "d303064ff58e561dff23bee95f6a470111c5d0d7f9166d1a4128da09e16564f8"
+  },
+  "suites": [
+    {
+      "suite": "com.estacionamento.api.GarageControlApplicationTests",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:14:41.959Z"
+    },
+    {
+      "suite": "com.estacionamento.api.RemediationIntegrationTest",
+      "tests": 25,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:14:57.951Z"
+    },
+    {
+      "suite": "com.estacionamento.api.application.ApartmentServiceIntegrationTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:15:40.489Z"
+    },
+    {
+      "suite": "com.estacionamento.api.application.MovementServiceIntegrationTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:15:46.999Z"
+    },
+    {
+      "suite": "com.estacionamento.api.application.ParkingSpaceServiceIntegrationTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:16:24.766Z"
+    },
+    {
+      "suite": "com.estacionamento.api.application.VehicleServiceIntegrationTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:16:58.674Z"
+    },
+    {
+      "suite": "com.estacionamento.api.application.audit.AuditServiceTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:17:32.446Z"
+    },
+    {
+      "suite": "com.estacionamento.api.application.auth.AuthServiceIntegrationTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:17:33.503Z"
+    },
+    {
+      "suite": "com.estacionamento.api.application.dashboard.DashboardServiceTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:18:11.153Z"
+    },
+    {
+      "suite": "com.estacionamento.api.application.gate.GateDispatchWorkerTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:18:13.797Z"
+    },
+    {
+      "suite": "com.estacionamento.api.application.gate.GateOperationServiceTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:18:14.150Z"
+    },
+    {
+      "suite": "com.estacionamento.api.application.hikvision.HikvisionEventIdempotencyLockConcurrencyTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:18:14.403Z"
+    },
+    {
+      "suite": "com.estacionamento.api.application.hikvision.HikvisionEventServiceIntegrationTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:18:19.389Z"
+    },
+    {
+      "suite": "com.estacionamento.api.application.hikvision.HikvisionToMovementIntegrationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:18:44.828Z"
+    },
+    {
+      "suite": "com.estacionamento.api.application.parking.ParkingSpaceSafetyTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:19:18.476Z"
+    },
+    {
+      "suite": "com.estacionamento.api.application.realtime.RealtimeEventPublisherTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:19:18.654Z"
+    },
+    {
+      "suite": "com.estacionamento.api.application.report.ReportServiceTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:19:18.860Z"
+    },
+    {
+      "suite": "com.estacionamento.api.domain.movement.PassageLifecycleTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:19:18.876Z"
+    },
+    {
+      "suite": "com.estacionamento.api.domain.role.RolePermissionsTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:19:19.100Z"
+    },
+    {
+      "suite": "com.estacionamento.api.domain.user.SessionVersionTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:19:19.216Z"
+    },
+    {
+      "suite": "com.estacionamento.api.infrastructure.gate.GateDriverStatusTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:19:19.220Z"
+    },
+    {
+      "suite": "com.estacionamento.api.infrastructure.gate.HttpGateDriverTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:19:19.222Z"
+    },
+    {
+      "suite": "com.estacionamento.api.infrastructure.gate.HttpGateDriverUnitTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:19:19.374Z"
+    },
+    {
+      "suite": "com.estacionamento.api.infrastructure.gate.SimulatedGateDriverTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:19:19.614Z"
+    },
+    {
+      "suite": "com.estacionamento.api.infrastructure.hikvision.HikvisionXmlParserTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:19:19.615Z"
+    },
+    {
+      "suite": "com.estacionamento.api.infrastructure.hikvision.PlateNormalizerTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:19:19.729Z"
+    },
+    {
+      "suite": "com.estacionamento.api.security.ConstantTimeSecretMatcherTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:19:19.730Z"
+    },
+    {
+      "suite": "com.estacionamento.api.security.HikvisionWebhookSecurityServiceTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:19:19.731Z"
+    },
+    {
+      "suite": "com.estacionamento.api.security.PersistentSessionValidatorTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:19:19.750Z"
+    },
+    {
+      "suite": "com.estacionamento.api.security.SecurityHeadersIntegrationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:19:19.845Z"
+    },
+    {
+      "suite": "com.estacionamento.api.security.SecurityIntegrationTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:19:51.973Z"
+    },
+    {
+      "suite": "com.estacionamento.api.web.DomainCrudAuthorizationIntegrationTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:20:26.047Z"
+    },
+    {
+      "suite": "com.estacionamento.api.web.MovementControllerSecurityIntegrationTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:20:59.257Z"
+    },
+    {
+      "suite": "com.estacionamento.api.web.dashboard.DashboardControllerSecurityIntegrationTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:21:32.412Z"
+    },
+    {
+      "suite": "com.estacionamento.api.web.filter.ClientIpResolverTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:22:06.689Z"
+    },
+    {
+      "suite": "com.estacionamento.api.web.filter.SensitiveOperationAuditFilterTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:22:06.691Z"
+    },
+    {
+      "suite": "com.estacionamento.api.web.filter.WebhookPayloadLimitFilterTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:22:07.071Z"
+    },
+    {
+      "suite": "com.estacionamento.api.web.hikvision.HikvisionWebhookControllerIntegrationTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:22:07.075Z"
+    },
+    {
+      "suite": "com.estacionamento.api.web.realtime.RealtimeControllerSecurityIntegrationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:22:40.176Z"
+    },
+    {
+      "suite": "com.estacionamento.api.web.report.ReportControllerSecurityIntegrationTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:23:12.862Z"
+    },
+    {
+      "suite": "com.estacionamento.api.web.user.UserManagementIntegrationTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timestamp": "2026-10-20T16:23:46.633Z"
+    }
+  ]
+}

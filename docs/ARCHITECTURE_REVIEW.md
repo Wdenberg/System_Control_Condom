@@ -1,6 +1,6 @@
 # Análise técnica — Frontend e Backend
 
-Data: 2026-10-18. Avaliação do código fornecido e do estado após a remediação. A inspeção estática identifica desenho e riscos; resultados executados estão separados em [TEST_REPORT.md](TEST_REPORT.md). Implementação não implica homologação.
+Atualização: 2026-10-20. Avaliação do código fornecido e do estado após a remediação. A inspeção estática identifica desenho e riscos; resultados executados estão separados em [TEST_REPORT.md](TEST_REPORT.md). Implementação não implica homologação.
 
 ## Frontend
 
@@ -26,7 +26,7 @@ Data: 2026-10-18. Avaliação do código fornecido e do estado após a remediaç
 
 **Pontos fortes:** suíte Vitest/React Testing Library cobre rotas, menus, formulários, cadastros, sessão e reconciliação, além de funções puras e cliente HTTP. Foram adicionadas regressões para expiração, revalidação, permissões, repetição segura e confirmação de controlador em resultado UNKNOWN. Cobertura tem configuração e limites iniciais explícitos. O smoke executado usa código real de armazenamento de sessão e cliente HTTP.
 
-**Débitos e riscos:** os bindings foram disponibilizados pela instalação do usuário; 276 testes em 42 arquivos, checagem TypeScript e build passaram nesta revisão. Não há percentual de cobertura aprovado: o provider ainda precisa entrar no lockfile, e a tentativa de instalação pelo agente continua bloqueada por DNS. CI instala temporariamente versão exata. O comando `lint` verifica TypeScript strict/noUnused; não é ESLint. Playwright e os fluxos com a API real permanecem pendentes. As regressões corrigiram perda de foco no modal e o nome acessível da placa durante erro de validação.
+**Débitos e riscos:** os bindings foram disponibilizados pela instalação do usuário; 276 testes em 42 arquivos, checagem TypeScript e build passaram nesta revisão. Em 20/10, npm ci, lint, build e cobertura passaram com o provider fixado no lockfile: linhas 59,21%, statements 53,17%, branches 51,65% e funções 43,39%. CI usa a instalação pelo lockfile. O comando `lint` verifica TypeScript strict/noUnused; não é ESLint. Playwright passou com seis cenários Chromium contra API real, incluindo login, Portaria/SSE, RBAC e idempotência. As regressões corrigiram perda de foco no modal e o nome acessível da placa durante erro de validação.
 
 ## Backend
 
@@ -38,7 +38,7 @@ O despacho separa claim transacional, chamada física fora da transação e conc
 
 **Débitos e riscos:** o domínio ainda contém entidades/repositórios JPA e alguns serviços de aplicação dependem de DTO web/JdbcTemplate; as fronteiras desejadas pelo AGENTE.md não estão integralmente desacopladas. Não houve reescrita geral da persistência. MovementService ainda concentra decisões, reservas e reconciliação; a evolução deve extrair políticas explícitas com testes comportamentais. Contratos manuais e construtores de compatibilidade usados por testes aumentam manutenção.
 
-O controlador HTTP genérico não oferece garantia comprovada de uma única abertura física. Timeout, interrupção, lease vencida ou resposta ambígua viram UNKNOWN, sem retry automático. A resolução exige operador/controlador, e histórico legado exige inventário. V12 interrompe a migração se encontrar colisões históricas de câmera/UUID, preservando os dados. Banco vazio e upgrade de banco existente ainda precisam ser exercitados.
+O controlador HTTP genérico não oferece garantia comprovada de uma única abertura física. Timeout, interrupção, lease vencida ou resposta ambígua viram UNKNOWN, sem retry automático. A resolução exige operador/controlador, e histórico legado exige inventário. V12 interrompe a migração se encontrar colisões históricas de câmera/UUID, preservando os dados. V1–V12 passaram em banco vazio na suíte completa; upgrade de banco existente ainda precisa ser exercitado.
 
 ### RBAC e segurança
 
@@ -46,19 +46,19 @@ O controlador HTTP genérico não oferece garantia comprovada de uma única aber
 
 Webhook exige segredo distinto por câmera cadastrada/habilitada; IP declarado no XML não autentica. Configuração ausente rejeita acesso, e segredos compartilhados/curtos/placeholders são recusados. Payload XML tem limite e bloqueio de entidades externas. Operações administrativas e tentativas sensíveis têm auditoria sem corpos ou credenciais. Automação física habilitada requer aprovação operacional explícita de configuração.
 
-**Débitos e riscos:** consultas persistidas de sessão/autoridade por requisição e por conexão SSE elevam carga; medir antes de otimizar, preservando a revogação. SSE é local à instância, sem replay durável, e clientes lentos ainda precisam de ensaio. Revogação não desfaz requisições já autorizadas em andamento. Segredo estático de webhook depende de TLS, provisionamento/rotação e capacidade real da câmera de enviar o header; se o firmware não o suportar, usar gateway autenticador, sem restaurar fallback por IP. Integrações completas de JWT/SSE, falhas e auditoria ainda aguardam execução.
+**Débitos e riscos:** consultas persistidas de sessão/autoridade por requisição e por conexão SSE elevam carga; medir antes de otimizar, preservando a revogação. SSE é local à instância, sem replay durável, e clientes lentos ainda precisam de ensaio. Revogação não desfaz requisições já autorizadas em andamento. Segredo estático de webhook depende de TLS, provisionamento/rotação e capacidade real da câmera de enviar o header; se o firmware não o suportar, usar gateway autenticador, sem restaurar fallback por IP. A suíte completa de integrações passou em 20/10; expiração/quotas SSE e carga ainda precisam de ensaios específicos.
 
 ### Infraestrutura e operação
 
 **Pontos fortes:** Java21, wrapper Gradle no build, runtime sem root, redes separadas e portas de banco/Redis/management sem publicação em produção. Cadeia de proxy explícita e Actuator negado na porta pública da aplicação. Health e métricas usam management interno. Backup inclui dump, imagens e manifesto de hashes; restore usa projeto/volumes isolados e verifica arquivos referenciados pelo banco. Runbooks e critérios de release registram os passos operacionais.
 
-**Débitos e riscos:** somente uma instância é declarada suportada. Não houve startup dos containers, teste de scrape/dashboard, restauração, scanner ou ensaio de recuperação. Backup exige pausa coordenada das escritas; não é snapshot online distribuído. Certificados precisam de permissões adequadas ao UID do Nginx e processo externo de renovação. Tags ainda precisam de digests/SBOM e evidências de vulnerabilidades. Dados brutos/imagens e auditoria exigem política operacional de retenção, acesso e capacidade de disco. Recuperação real e comportamento sob falta de disco/Redis/DB permanecem critérios de homologação.
+**Débitos e riscos:** somente uma instância é declarada suportada. Containers de teste e backend E2E iniciaram; Compose de produção, scrape/dashboard, restauração, scanner e recuperação continuam sem homologação. Backup exige pausa coordenada das escritas; não é snapshot online distribuído. Certificados precisam de permissões adequadas ao UID do Nginx e processo externo de renovação. Tags ainda precisam de digests/SBOM e evidências de vulnerabilidades. Dados brutos/imagens e auditoria exigem política operacional de retenção, acesso e capacidade de disco. Recuperação real e comportamento sob falta de disco/Redis/DB permanecem critérios de homologação.
 
 ### Testes
 
 **Pontos fortes:** unitários de parser/XXE, placa, matriz de permissões, segredos, sessão, ciclo de passagem, driver e worker. Testcontainers/MockMvc foram ampliados para concorrência real, idempotência, rollback/repetição de cadastro, perfis, revogação, SSE, lease e reconciliação. O teste HTTP que depende de socket foi preservado apesar da restrição local. CI separa frontend, backend e E2E e não declara aprovação operacional automática.
 
-**Débitos e riscos:** o usuário executou a classe RemediationIntegrationTest via Gradle com PostgreSQL/Redis: 22/24 casos passaram, inclusive revogação, cinco perfis, idempotência e concorrência. V1–V12 foram aplicadas em banco vazio. As duas falhas de preparação/contrato foram corrigidas nos testes e aguardam reexecução. Com as dependências Gradle atuais, o agente compilou todos os 166 fontes de produção e 41 de testes e executou 68 unitários aprovados. A suíte Gradle completa, upgrade com dados legados, E2E e restore continuam pendentes; Docker permanece inacessível ao agente. As métricas e alertas precisam de carga e falhas simuladas em ambiente isolado; k6 contém preflight que exige alvo com cancela desabilitada e driver simulado. Ver BACKEND_TEST_ANALYSIS.md.
+**Débitos e riscos:** em 20/10, ./gradlew clean test build --no-daemon --no-build-cache passou: 146 testes em 41 classes, nenhum ignorado; RemediationIntegrationTest 25/25 com PostgreSQL/Redis. V1–V12 foram aplicadas em banco vazio e o JAR foi gerado. A reexecução identificou e corrigiu a desserialização do controllerSettled opcional; omissão/null/false preservam o bloqueio de UNKNOWN. A primeira execução E2E reproduziu erro 500 por leitura de moradores fora da transação; listagem/detalhe agora montam o DTO no serviço transacional, com regressão integrada. Corrigidos os seletores e a navegação/sincronização dos testes; seis cenários Chromium passaram. Upgrade com dados legados e restore continuam pendentes; Docker foi disponibilizado mediante execução autorizada fora do sandbox. As métricas e alertas precisam de carga e falhas simuladas em ambiente isolado; k6 contém preflight que exige alvo com cancela desabilitada e driver simulado. Ver BACKEND_TEST_ANALYSIS.md.
 
 ## Ordem de liberação
 

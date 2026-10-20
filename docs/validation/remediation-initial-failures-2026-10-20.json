@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-20",
+  "execution": "initial",
+  "backendIntegration": {
+    "tests": 24,
+    "passed": 22,
+    "failed": 2,
+    "cause": "Optional controllerSettled primitive rejected omission with HTTP 400",
+    "corrected": true
+  },
+  "e2e": {
+    "tests": 6,
+    "passed": 2,
+    "failed": 4,
+    "issues": [
+      {
+        "test": "login real -> dashboard -> session authenticated",
+        "cause": "Expected old Dashboard heading; actual heading is Painel",
+        "scope": "test"
+      },
+      {
+        "test": "cadastro -> Hikvision -> autorização -> portaria em tempo real",
+        "cause": "Full document navigation recreated SSE; webhook was sent before reconnection",
+        "scope": "test synchronization"
+      },
+      {
+        "test": "placa desconhecida gera acesso negado",
+        "cause": "Navigation interrupted login before session was established",
+        "scope": "test synchronization"
+      },
+      {
+        "test": "mesmo UUID não cria dois movimentos",
+        "cause": "GET /movements returned HTTP 500 from detached Vehicle.residents collection",
+        "scope": "production API"
+      }
+    ]
+  },
+  "regressionReproduction": {
+    "tests": 1,
+    "failed": 1,
+    "exception": "org.hibernate.LazyInitializationException",
+    "association": "Vehicle.residents",
+    "correction": "Map MovementResult inside the read-only service transaction"
+  }
+}

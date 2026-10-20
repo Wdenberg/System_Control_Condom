@@ -1,4 +1,18 @@
-# Relatório de testes — 2026-10-18
+# Relatório de testes — 2026-10-20
+
+## Validação atual — 2026-10-20
+
+- Backend: `cd backend && ./gradlew clean test build --no-daemon --no-build-cache` terminou com **BUILD SUCCESSFUL**, em 11m 2s. **146 testes em 41 classes, nenhuma falha, erro ou teste ignorado**. Inclui PostgreSQL/Redis via Testcontainers, a classe RemediationIntegrationTest com **25/25 aprovados** e o teste HTTP com socket local. JAR gerado em `backend/build/libs/garage-control-backend-1.0.0.jar`. Resumo sanitizado dos XMLs: [validation/backend-full-2026-10-20.json](validation/backend-full-2026-10-20.json).
+- A primeira reexecução da classe filtrada revelou 400 quando `controllerSettled` era omitido: o parâmetro primitivo do DTO recusava a ausência durante a desserialização. Corrigido para Boolean com conversão explícita por `Boolean.TRUE.equals`. A regressão integrada verifica que ausência, null e false mantêm UNKNOWN bloqueado com 409; true permite a reconciliação auditada. O caso EXHAUSTED sem o campo também passou. O build completo final inclui essas correções e a nova regressão de leitura de movimentações descrita abaixo (25 testes na classe de remediação).
+- Frontend: provedor `@vitest/coverage-v8@5.0.0` incorporado ao package.json/lockfile; removida instalação temporária da CI. **`npm ci`, `npm run lint`, `npm run build` e `npm run test:coverage` passaram**. Cobertura executada novamente após a instalação limpa: **276 testes em 42 arquivos**; linhas **59,21%**, statements **53,17%**, branches **51,65%**, funções **43,39%**. Todos os limites configurados passaram, sem alteração dos limites ou exclusões. Logs com sufixo `2026-10-20` em validation e [resumo de cobertura](validation/frontend-coverage-summary-2026-10-20.json).
+- Docker Desktop iniciado e acessível mediante execução autorizada fora do sandbox; as limitações históricas de socket, cache Gradle e DNS abaixo não impediram esta validação.
+- `bash -n e2e/scripts/run-e2e.sh`, `python3 scripts/render-rbac.py --check` e `git diff --check`: aprovados. E2E passou a usar projeto Compose exclusivo por execução e `npm ci`; TypeScript corrigido de 6.0.0 (inexistente no registry) para 7.0.2 e lockfile gerado.
+- E2E: **6/6 cenários Playwright aprovados no Chromium**, em 22,0s, contra frontend Vite e backend construído pelo Dockerfile, com PostgreSQL/Redis descartáveis. Login, autorização Hikvision/SSE, placa desconhecida, ATTENDANT, token inválido e retransmissão idempotente passaram. `GATE_ENABLED=false`, driver SIMULATED; containers, três volumes e rede do projeto removidos ao final. [Resumo sanitizado](validation/e2e-2026-10-20.json).
+- A execução inicial E2E encontrou 4 falhas em 6 cenários: título antigo no teste de login; navegação antes de concluir o login; recarga da página/SSE antes do webhook; e HTTP 500 na leitura de movimentações com moradores. A regressão integrada reproduziu `LazyInitializationException` em `Vehicle.residents`. As respostas de listagem/detalhe agora são montadas dentro da transação do serviço, sem alterar o JSON nem habilitar open-in-view. Os testes usam navegação da SPA e aguardam sessão/conexão ativa. [Histórico sanitizado das falhas](validation/remediation-initial-failures-2026-10-20.json).
+- `cd e2e && npm run typecheck`: aprovado sem skipLibCheck. Configuração de módulos alinhada ao transformador Playwright (ESNext/Bundler) e tipos Node atualizados para 24.19.2, corrigindo conflito URLPattern com TypeScript 7. Script E2E agora executa essa checagem. A descoberta Playwright continua listando os seis cenários. Log: validation/e2e-typecheck-2026-10-20.log.
+- `npm audit --audit-level=high --json`: aprovado, **zero vulnerabilidades reportadas** para as dependências do frontend nessa data; [relatório](validation/frontend-audit-2026-10-20.json). Não substitui scanner das imagens nem análise das dependências Java.
+
+As evidências de 18/10 abaixo são históricas e não substituem os resultados atuais. Build e testes locais não equivalem à execução da pipeline hospedada nem à homologação operacional.
 
 ## Evidência disponível
 
@@ -38,6 +52,6 @@ Foi acrescentado teste integrado para UNKNOWN legado sem reserva histórica: nov
 
 Correções da integração: removida a chamada à rota inexistente /acknowledge e restaurada a verificação 409 sem controllerSettled seguida de 200 com a declaração, com validação de reserva e auditoria. O teste de retry percorre as três tentativas configuradas por claims reais, verifica PENDING e recusa reconciliação antes de EXHAUSTED; após reconciliação, retry permanece negado. Não houve alteração de regra ou endpoint de produção nesta revisão.
 
-## Execução oficial pendente
+## Próximas validações
 
-Frontend: validar instalação limpa `npm ci` na CI, incorporar o provedor de cobertura ao lockfile e executar `npm run test:coverage`; lint/build/test já passaram localmente. Backend: repetir a classe corrigida com `./gradlew test --tests 'com.estacionamento.api.RemediationIntegrationTest' --rerun-tasks --no-build-cache`, depois `./gradlew clean test build`. E2E: `bash e2e/scripts/run-e2e.sh`. Carga: cenário isolado, driver simulado, GATE_ENABLED=false e preflight autenticado do alvo. Restauração: procedimento isolado de BACKUP_RESTORE.md. A pipeline criada ainda não foi executada por um serviço de CI nesta sessão.
+Backend completo, instalação limpa/cobertura do frontend e os seis cenários E2E passaram localmente em 20/10. Carga: cenário isolado, driver simulado, GATE_ENABLED=false e preflight autenticado do alvo. Restauração: procedimento isolado de BACKUP_RESTORE.md. Permanecem a execução hospedada da CI, upgrade com dados legados, ensaios de produção/recuperação e comissionamento físico autorizado.

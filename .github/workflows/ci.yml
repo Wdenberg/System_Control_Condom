@@ -19,8 +19,6 @@ jobs:
       - run: npm run lint
       - run: npm run build
       - run: npm test
-      # Exact provider version matches Vitest. Incorporate it in the lockfile once registry access is available.
-      - run: npm install --no-save --package-lock=false @vitest/coverage-v8@5.0.0
       - run: npm run test:coverage
       - run: npm audit --audit-level=high
   backend:

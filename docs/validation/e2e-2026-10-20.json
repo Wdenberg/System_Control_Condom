@@ -1,0 +1,59 @@
+{
+  "date": "2026-10-20",
+  "command": "bash e2e/scripts/run-e2e.sh",
+  "browser": "Chromium",
+  "tests": 6,
+  "passed": 6,
+  "failed": 0,
+  "skipped": 0,
+  "result": "PASSED",
+  "runnerDuration": "22.0s",
+  "gateEnabled": false,
+  "gateDriver": "SIMULATED",
+  "composeProject": "garage-control-e2e-5796",
+  "cleanup": "All three containers, all three volumes and the project network removed",
+  "cases": [
+    {
+      "test": "login real -> dashboard -> session authenticated",
+      "suite": "01-smoke-auth.spec.ts",
+      "timeSeconds": 3.232,
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "test": "cadastro -> Hikvision -> autorização -> portaria em tempo real",
+      "suite": "02-operational-flow.spec.ts",
+      "timeSeconds": 3.474,
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "test": "placa desconhecida gera acesso negado",
+      "suite": "03-negative-and-rbac.spec.ts",
+      "timeSeconds": 2.747,
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "test": "usuário ATTENDANT não acessa administração de usuários",
+      "suite": "03-negative-and-rbac.spec.ts",
+      "timeSeconds": 3.218,
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "test": "webhook rejeita token inválido",
+      "suite": "04-webhook-security-and-idempotency.spec.ts",
+      "timeSeconds": 0.073,
+      "failed": false,
+      "skipped": false
+    },
+    {
+      "test": "mesmo UUID não cria dois movimentos",
+      "suite": "04-webhook-security-and-idempotency.spec.ts",
+      "timeSeconds": 0.874,
+      "failed": false,
+      "skipped": false
+    }
+  ]
+}

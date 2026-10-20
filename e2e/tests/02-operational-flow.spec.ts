@@ -17,8 +17,9 @@ test('cadastro -> Hikvision -> autorização -> portaria em tempo real', async (
   await page.getByRole('button', { name: 'Entrar' }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
 
-  await page.goto('/portaria');
+  await page.getByRole('link', { name: 'Portaria', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Portaria' })).toBeVisible();
+  await expect(page.getByText('Tempo real ativo', { exact: true })).toBeVisible();
 
   const response = await sendHikvisionEvent(
     request,

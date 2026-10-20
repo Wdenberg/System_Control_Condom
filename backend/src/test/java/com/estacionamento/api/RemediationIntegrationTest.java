@@ -230,10 +230,12 @@ class RemediationIntegrationTest {
     @Test void unknownOutcomeRequiresControllerVerificationBeforeReconciliation() throws Exception {
         Long movement=recognize();var claim=dispatch.claim().orElseThrow();dispatch.finish(claim,GateCommandResult.unknown("Uncertain delivery"));
 
-        mvc.perform(post("/api/v1/movements/"+movement+"/passage-confirmation")
-                        .header("Authorization","Bearer "+token).contentType("application/json")
-                        .content("{\"passed\":false,\"justification\":\"No controller verification provided\"}"))
-                .andExpect(status().isConflict());
+        for (String controllerSettled : List.of("", ",\"controllerSettled\":null", ",\"controllerSettled\":false")) {
+            mvc.perform(post("/api/v1/movements/"+movement+"/passage-confirmation")
+                            .header("Authorization","Bearer "+token).contentType("application/json")
+                            .content("{\"passed\":false,\"justification\":\"No controller verification provided\""+controllerSettled+"}"))
+                    .andExpect(status().isConflict());
+        }
         assertThat(jdbc.queryForObject("SELECT passage_state FROM movements WHERE id=?", String.class, movement)).isEqualTo("UNKNOWN");
         assertThat(jdbc.queryForObject("SELECT reservation_active FROM movements WHERE id=?", Boolean.class, movement)).isTrue();
         assertThat(dispatch.claim()).isEmpty();
@@ -247,6 +249,19 @@ class RemediationIntegrationTest {
         assertThat(jdbc.queryForObject("SELECT inside_garage FROM vehicles", Boolean.class)).isFalse();
         assertThat(jdbc.queryForObject("SELECT count(*) FROM gate_operation_attempts WHERE operation_id=?", Integer.class, claim.id())).isEqualTo(1);
         assertThat(jdbc.queryForObject("SELECT count(*) FROM audit_logs WHERE action='PASSAGE_RECONCILIATION' AND details LIKE '%controllerSettled=true%'", Integer.class)).isEqualTo(1);
+    }
+
+    @Test void movementReadEndpointsIncludeResidentAndApartmentOutsideTheWriteTransaction() throws Exception {
+        Long movement = recognize();
+        mvc.perform(get("/api/v1/movements").header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].movementId").value(movement))
+                .andExpect(jsonPath("$.content[0].vehicleOwner").value("Resident Test"))
+                .andExpect(jsonPath("$.content[0].apartmentNumber").value("101"));
+        mvc.perform(get("/api/v1/movements/" + movement).header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.vehicleOwner").value("Resident Test"))
+                .andExpect(jsonPath("$.apartmentNumber").value("101"));
     }
 
     @Test void acceptedCommandDoesNotConfirmOccupancyUntilObservedPassage() throws Exception {
